@@ -3,30 +3,20 @@ import { useNavigate } from "react-router-dom";
 import NoteInput from "../components/NoteInput";
 import { addNote } from "../utils/local-data";
 
-function AddPageWrapper() {
+function AddPage() {
   const navigate = useNavigate();
-  return <AddPage navigate={navigate} />;
-}
 
-class AddPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.onAddNote = this.onAddNote.bind(this);
-  }
-
-  onAddNote({ title, body }) {
+  function onAddNote({ title, body }) {
     addNote({ title, body });
-    this.props.navigate("/");
+    navigate("/");
   }
 
-  render() {
-    return (
-      <main>
-        <h2>Tambah Catatan</h2>
-        <NoteInput addNote={this.onAddNote} />
-      </main>
-    );
-  }
+  return (
+    <main>
+      <h2>Tambah Catatan</h2>
+      <NoteInput addNote={onAddNote} />
+    </main>
+  );
 }
 
-export default AddPageWrapper;
+export default AddPage;
