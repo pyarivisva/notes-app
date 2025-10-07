@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Link, Outlet } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import NoteDetail from "./pages/NoteDetail";
+import NoteDetailPage from "./pages/NoteDetailPage";
 import AddPage from "./pages/AddPage";
 import ArchivePage from "./pages/ArchivePage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -44,7 +44,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="/notes/new" element={<AddPage />} />
-        <Route path="/notes/:id" element={<NoteDetail />} />
+        <Route path="/notes/:id" element={<NoteDetailPage />} />
         <Route path="/archives" element={<ArchivePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

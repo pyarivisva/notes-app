@@ -10,13 +10,13 @@ import { showFormattedDate } from "../utils";
 import DeleteButton from "../components/DeleteButton";
 import ArchiveButton from "../components/ArchiveButton";
 
-function NoteDetailWrapper() {
+function NoteDetailPageWrapper() {
   const { id } = useParams();
   const navigate = useNavigate();
-  return <NoteDetail id={id} navigate={navigate} />;
+  return <NoteDetailPage id={id} navigate={navigate} />;
 }
 
-class NoteDetail extends React.Component {
+class NoteDetailPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -69,4 +69,4 @@ class NoteDetail extends React.Component {
   }
 }
 
-export default NoteDetailWrapper;
+export default NoteDetailPageWrapper;
