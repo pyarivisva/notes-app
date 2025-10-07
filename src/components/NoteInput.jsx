@@ -8,23 +8,19 @@ class NoteInput extends React.Component {
       title: "",
       body: "",
     };
-
-    this.onTitleChangeHandler = this.onTitleChangeHandler.bind(this);
-    this.onBodyChangeHandler = this.onBodyChangeHandler.bind(this);
-    this.onSubmitHandler = this.onSubmitHandler.bind(this);
   }
 
-  onTitleChangeHandler(event) {
+  onTitleChangeHandler = (event) => {
     if (event.target.value.length <= 50) {
       this.setState({ title: event.target.value });
     }
-  }
+  };
 
-  onBodyChangeHandler(event) {
+  onBodyChangeHandler = (event) => {
     this.setState({ body: event.target.value });
-  }
+  };
 
-  onSubmitHandler(event) {
+  onSubmitHandler = (event) => {
     event.preventDefault();
     if (!this.state.title.trim() || !this.state.body.trim()) return;
 
@@ -34,7 +30,7 @@ class NoteInput extends React.Component {
     });
 
     this.setState({ title: "", body: "" });
-  }
+  };
 
   render() {
     return (

@@ -30,11 +30,6 @@ class HomePage extends React.Component {
       notes: getAllNotes(),
       keyword: props.defaultKeyword || "",
     };
-
-    this.onDeleteHandler = this.onDeleteHandler.bind(this);
-    this.onArchiveHandler = this.onArchiveHandler.bind(this);
-    this.onSearchChangeHandler = this.onSearchChangeHandler.bind(this);
-    this.refreshNotes = this.refreshNotes.bind(this);
   }
 
   componentDidMount() {
@@ -50,16 +45,16 @@ class HomePage extends React.Component {
     }
   }
 
-  refreshNotes() {
+  refreshNotes = () => {
     this.setState({ notes: getAllNotes() });
-  }
+  };
 
-  onDeleteHandler(id) {
+  onDeleteHandler = (id) => {
     deleteNote(id);
     this.refreshNotes();
-  }
+  };
 
-  onArchiveHandler(id) {
+  onArchiveHandler = (id) => {
     const note = this.state.notes.find((n) => n.id === id);
     if (note && note.archived) {
       unarchiveNote(id);
@@ -67,12 +62,12 @@ class HomePage extends React.Component {
       archiveNote(id);
     }
     this.refreshNotes();
-  }
+  };
 
-  onSearchChangeHandler(keyword) {
+  onSearchChangeHandler = (keyword) => {
     this.setState({ keyword });
     this.props.keywordChange(keyword);
-  }
+  };
 
   render() {
     const { notes, keyword } = this.state;

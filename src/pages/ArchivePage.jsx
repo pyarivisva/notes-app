@@ -8,23 +8,21 @@ class ArchivePage extends React.Component {
     this.state = {
       notes: getAllNotes().filter((n) => n.archived),
     };
-    this.onDelete = this.onDelete.bind(this);
-    this.onUnarchive = this.onUnarchive.bind(this);
   }
 
-  onDelete(id) {
+  onDelete = (id) => {
     deleteNote(id);
     this.setState({
       notes: getAllNotes().filter((n) => n.archived),
     });
-  }
+  };
 
-  onUnarchive(id) {
+  onUnarchive = (id) => {
     unarchiveNote(id);
     this.setState({
       notes: getAllNotes().filter((n) => n.archived),
     });
-  }
+  };
 
   render() {
     return (
