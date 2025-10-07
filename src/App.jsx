@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, Outlet } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import NoteDetail from "./pages/NoteDetail";
 import AddPage from "./pages/AddPage";
@@ -7,7 +7,7 @@ import ArchivePage from "./pages/ArchivePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import { FiHome, FiPlusCircle, FiArchive } from "react-icons/fi";
 
-function App() {
+function Layout() {
   return (
     <div className="app-container">
       <header>
@@ -33,14 +33,22 @@ function App() {
         </nav>
       </header>
 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
+      <Outlet />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
         <Route path="/notes/new" element={<AddPage />} />
         <Route path="/notes/:id" element={<NoteDetail />} />
         <Route path="/archives" element={<ArchivePage />} />
         <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </div>
+      </Route>
+    </Routes>
   );
 }
 
