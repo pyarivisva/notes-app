@@ -1,13 +1,16 @@
-import React from "react";
-import { Routes, Route, Link, Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes, Route, Link, Outlet, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import NoteDetailPage from "./pages/NoteDetailPage";
 import AddPage from "./pages/AddPage";
 import ArchivePage from "./pages/ArchivePage";
 import NotFoundPage from "./pages/NotFoundPage";
-import { FiHome, FiPlusCircle, FiArchive } from "react-icons/fi";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import { FiHome, FiPlusCircle, FiArchive, FiLogOut } from "react-icons/fi";
+import { getUserLogged, putAccessToken } from "./utils/network-data";
 
-function Layout() {
+function Layout({ authedUser, onLogout }) {
   return (
     <div className="app-container">
       <header>
@@ -29,6 +32,13 @@ function Layout() {
                 <FiArchive />
               </Link>
             </li>
+            {authedUser && (
+              <li>
+                <button onClick={onLogout} title="Keluar">
+                  <FiLogOut />
+                </button>
+              </li>
+            )}
           </ul>
         </nav>
       </header>
@@ -39,9 +49,50 @@ function Layout() {
 }
 
 function App() {
+  const [authedUser, setAuthedUser] = useState(null);
+  const [initializing, setInitializing] = useState(true);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const { data } = await getUserLogged();
+      setAuthedUser(data);
+      setInitializing(false);
+    }
+
+    fetchUser();
+  }, []);
+
+  const onLoginSuccess = (user) => {
+    setAuthedUser(user);
+  };
+
+  const onLogout = () => {
+    setAuthedUser(null);
+    putAccessToken("");
+  };
+
+  if (initializing) {
+    return <div>Loading...</div>;
+  }
+
+  // Jika belum login, hanya tampilkan route login & register
+  if (authedUser === null) {
+    return (
+      <Routes>
+        <Route
+          path="/login"
+          element={<LoginPage onLoginSuccess={onLoginSuccess} />}
+        />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    );
+  }
+
+  // Jika sudah login, tampilkan aplikasi utama
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route element={<Layout authedUser={authedUser} onLogout={onLogout} />}>
         <Route index element={<HomePage />} />
         <Route path="/notes/new" element={<AddPage />} />
         <Route path="/notes/:id" element={<NoteDetailPage />} />
