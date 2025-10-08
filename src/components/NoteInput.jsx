@@ -1,59 +1,60 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { FiSave } from "react-icons/fi";
+import LocaleContext from "../contexts/LocaleContext";
 
-class NoteInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: "",
-      body: "",
-    };
-  }
+function NoteInput({ addNote }) {
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const { locale } = useContext(LocaleContext);
 
-  onTitleChangeHandler = (event) => {
+  const onTitleChangeHandler = (event) => {
     if (event.target.value.length <= 50) {
-      this.setState({ title: event.target.value });
+      setTitle(event.target.value);
     }
   };
 
-  onBodyChangeHandler = (event) => {
-    this.setState({ body: event.target.value });
+  const onBodyChangeHandler = (event) => {
+    setBody(event.target.value);
   };
 
-  onSubmitHandler = (event) => {
+  const onSubmitHandler = (event) => {
     event.preventDefault();
-    if (!this.state.title.trim() || !this.state.body.trim()) return;
+    if (!title.trim() || !body.trim()) return;
 
-    this.props.addNote({
-      title: this.state.title,
-      body: this.state.body,
-    });
-
-    this.setState({ title: "", body: "" });
+    addNote({ title, body });
+    setTitle("");
+    setBody("");
   };
 
-  render() {
-    return (
-      <form className="add-new-page__input" onSubmit={this.onSubmitHandler}>
-        <input
-          type="text"
-          className="add-new-page__input__title"
-          placeholder="Judul Catatan"
-          value={this.state.title}
-          onChange={this.onTitleChangeHandler}
-        />
-        <textarea
-          className="add-new-page__input__body"
-          placeholder="Tulis catatan di sini..."
-          value={this.state.body}
-          onChange={this.onBodyChangeHandler}
-        />
-        <button type="submit" className="action" title="Simpan Catatan">
-          <FiSave />
-        </button>
-      </form>
-    );
-  }
+  return (
+    <form className="add-new-page__input" onSubmit={onSubmitHandler}>
+      <input
+        type="text"
+        className="add-new-page__input__title"
+        placeholder={locale === "id" ? "Judul Catatan" : "Note Title"}
+        value={title}
+        onChange={onTitleChangeHandler}
+      />
+      <textarea
+        className="add-new-page__input__body"
+        placeholder={
+          locale === "id"
+            ? "Tulis catatan di sini..."
+            : "Write your note here..."
+        }
+        value={body}
+        onChange={onBodyChangeHandler}
+      />
+      <button
+        type="submit"
+        className="add-new-page__action"
+        title="Simpan Catatan"
+      >
+        <FiSave />
+        {locale === "id" ? "Simpan" : "Save"}
+      </button>
+    </form>
+  );
 }
 
 export default NoteInput;

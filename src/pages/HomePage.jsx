@@ -8,6 +8,7 @@ import {
   archiveNote,
   unarchiveNote,
 } from "../utils/network-data";
+import LocaleContext from "../contexts/LocaleContext";
 
 function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,6 +16,7 @@ function HomePage() {
   const [keyword, setKeyword] = React.useState(() => {
     return searchParams.get("keyword") || "";
   });
+  const { locale } = React.useContext(LocaleContext);
 
   // Ambil data catatan aktif dari API
   React.useEffect(() => {
@@ -61,12 +63,12 @@ function HomePage() {
   return (
     <main>
       <NoteSearch keyword={keyword} onSearch={onKeywordChangeHandler} />
-      <h2>Catatan Aktif</h2>
+      <h2>{locale === "id" ? "Catatan Aktif" : "Active Notes"}</h2>
       <NoteList
         notes={activeNotes}
         onDelete={onDeleteHandler}
         onArchive={onArchiveHandler}
-        emptyMessage="Tidak ada catatan"
+        emptyMessage={locale === "id" ? "Tidak ada catatan" : "No notes"}
       />
     </main>
   );

@@ -9,11 +9,13 @@ import {
 import { showFormattedDate } from "../utils";
 import DeleteButton from "../components/DeleteButton";
 import ArchiveButton from "../components/ArchiveButton";
+import LocaleContext from "../contexts/LocaleContext";
 
 function NoteDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [note, setNote] = React.useState(null);
+  const { locale } = React.useContext(LocaleContext);
 
   // Ambil detail note berdasarkan id
   React.useEffect(() => {
@@ -47,7 +49,7 @@ function NoteDetailPage() {
 
   // Jika data belum dimuat
   if (!note) {
-    return <p>Memuat catatan...</p>;
+    return <p>{locale === "id" ? "Memuat catatan..." : "Loading note..."}</p>;
   }
 
   return (

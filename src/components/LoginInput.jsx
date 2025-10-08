@@ -1,10 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import useInput from "../hooks/useInput";
+import LocaleContext from "../contexts/LocaleContext";
 
 function LoginInput({ onLogin }) {
   const [email, onEmailChange] = useInput("");
   const [password, onPasswordChange] = useInput("");
+  const { locale } = React.useContext(LocaleContext);
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -15,19 +17,19 @@ function LoginInput({ onLogin }) {
     <form onSubmit={onSubmitHandler} className="input-login">
       <input
         type="email"
-        placeholder="Email"
+        placeholder={locale === "id" ? "Email" : "Email"}
         value={email}
         onChange={onEmailChange}
         required
       />
       <input
         type="password"
-        placeholder="Password"
+        placeholder={locale === "id" ? "Kata Sandi" : "Password"}
         value={password}
         onChange={onPasswordChange}
         required
       />
-      <button type="submit">Masuk</button>
+      <button type="submit">{locale === "id" ? "Masuk" : "Login"}</button>
     </form>
   );
 }

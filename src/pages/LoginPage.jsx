@@ -2,9 +2,11 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LoginInput from "../components/LoginInput";
 import { login, putAccessToken, getUserLogged } from "../utils/network-data";
+import LocaleContext from "../contexts/LocaleContext";
 
 function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate();
+  const { locale } = React.useContext(LocaleContext);
 
   async function onLogin({ email, password }) {
     const { error, data } = await login({ email, password });
@@ -23,11 +25,16 @@ function LoginPage({ onLoginSuccess }) {
 
   return (
     <section className="login-page">
-      <h2>Masuk</h2>
-      <LoginInput onLogin={onLogin} />
-      <p>
-        Belum punya akun? <Link to="/register">Daftar di sini</Link>
-      </p>
+      <div className="login-box">
+        <h2>{locale === "id" ? "Masuk" : "Login"}</h2>
+        <LoginInput onLogin={onLogin} />
+        <p>
+          {locale === "id" ? "Belum punya akun? " : "Don't have an account? "}
+          <Link to="/register">
+            {locale === "id" ? "Daftar di sini" : "Register here"}
+          </Link>
+        </p>
+      </div>
     </section>
   );
 }

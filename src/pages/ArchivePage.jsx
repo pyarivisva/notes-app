@@ -1,13 +1,21 @@
 import React from "react";
 import NoteList from "../components/NoteList";
+import { useSearchParams } from "react-router-dom";
+import NoteSearch from "../components/NoteSearch";
 import {
   getArchivedNotes,
   deleteNote,
   unarchiveNote,
 } from "../utils/network-data";
+import LocaleContext from "../contexts/LocaleContext";
 
 function ArchivePage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [keyword, setKeyword] = React.useState(() => {
+    return searchParams.get("keyword") || "";
+  });
   const [notes, setNotes] = React.useState([]);
+  const { locale } = React.useContext(LocaleContext);
 
   // Ambil data catatan terarsip dari API
   React.useEffect(() => {
@@ -32,14 +40,28 @@ function ArchivePage() {
     setNotes(data);
   }
 
+  // Handler pencarian
+  function onKeywordChangeHandler(keyword) {
+    setKeyword(keyword);
+    setSearchParams({ keyword });
+  }
+
+  // Filter catatan berdasarkan keyword
+  const filteredNotes = notes.filter(
+    (note) =>
+      note.archived && // hanya yang terarsip
+      note.title.toLowerCase().includes(keyword.toLowerCase())
+  );
+
   return (
     <main>
-      <h2>Arsip Catatan</h2>
+      <NoteSearch keyword={keyword} onSearch={onKeywordChangeHandler} />
+      <h2>{locale === "id" ? "Arsip Catatan" : "Archived Notes"}</h2>
       <NoteList
-        notes={notes}
+        notes={filteredNotes}
         onDelete={onDeleteHandler}
         onArchive={onUnarchiveHandler}
-        emptyMessage="Arsip kosong"
+        emptyMessage={locale === "id" ? "Arsip kosong" : "No archives"}
       />
     </main>
   );

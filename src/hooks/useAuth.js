@@ -11,7 +11,6 @@ export default function useAuth() {
         const { data } = await getUserLogged();
         setAuthedUser(data);
       } catch (error) {
-        // kalau token tidak valid atau belum login
         setAuthedUser(null);
       } finally {
         setInitializing(false);
