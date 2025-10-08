@@ -1,42 +1,48 @@
 import React from "react";
 import NoteList from "../components/NoteList";
-import { getAllNotes, deleteNote, unarchiveNote } from "../utils/local-data";
+import {
+  getArchivedNotes,
+  deleteNote,
+  unarchiveNote,
+} from "../utils/network-data";
 
-class ArchivePage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      notes: getAllNotes().filter((n) => n.archived),
-    };
+function ArchivePage() {
+  const [notes, setNotes] = React.useState([]);
+
+  // Ambil data catatan terarsip dari API
+  React.useEffect(() => {
+    async function fetchArchivedNotes() {
+      const { data } = await getArchivedNotes();
+      setNotes(data);
+    }
+    fetchArchivedNotes();
+  }, []);
+
+  // Handler hapus catatan
+  async function onDeleteHandler(id) {
+    await deleteNote(id);
+    const { data } = await getArchivedNotes();
+    setNotes(data);
   }
 
-  onDelete = (id) => {
-    deleteNote(id);
-    this.setState({
-      notes: getAllNotes().filter((n) => n.archived),
-    });
-  };
-
-  onUnarchive = (id) => {
-    unarchiveNote(id);
-    this.setState({
-      notes: getAllNotes().filter((n) => n.archived),
-    });
-  };
-
-  render() {
-    return (
-      <main>
-        <h2>Arsip Catatan</h2>
-        <NoteList
-          notes={this.state.notes}
-          onDelete={this.onDelete}
-          onArchive={this.onUnarchive}
-          emptyMessage="Arsip kosong"
-        />
-      </main>
-    );
+  // Handler batal arsip
+  async function onUnarchiveHandler(id) {
+    await unarchiveNote(id);
+    const { data } = await getArchivedNotes();
+    setNotes(data);
   }
+
+  return (
+    <main>
+      <h2>Arsip Catatan</h2>
+      <NoteList
+        notes={notes}
+        onDelete={onDeleteHandler}
+        onArchive={onUnarchiveHandler}
+        emptyMessage="Arsip kosong"
+      />
+    </main>
+  );
 }
 
 export default ArchivePage;

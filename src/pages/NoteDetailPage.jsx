@@ -5,68 +5,65 @@ import {
   deleteNote,
   archiveNote,
   unarchiveNote,
-} from "../utils/local-data";
+} from "../utils/network-data";
 import { showFormattedDate } from "../utils";
 import DeleteButton from "../components/DeleteButton";
 import ArchiveButton from "../components/ArchiveButton";
 
-function NoteDetailPageWrapper() {
+function NoteDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  return <NoteDetailPage id={id} navigate={navigate} />;
-}
+  const [note, setNote] = React.useState(null);
 
-class NoteDetailPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      note: getNote(props.id),
-    };
+  // Ambil detail note berdasarkan id
+  React.useEffect(() => {
+    async function fetchNote() {
+      const { data } = await getNote(id);
+      setNote(data);
+    }
+    fetchNote();
+  }, [id]);
 
-    this.onDelete = this.onDelete.bind(this);
-    this.onToggleArchive = this.onToggleArchive.bind(this);
+  // Hapus catatan
+  async function onDelete() {
+    await deleteNote(id);
+    navigate("/");
   }
 
-  onDelete() {
-    deleteNote(this.props.id);
-    this.props.navigate("/"); // atau ke /notes
-  }
-
-  onToggleArchive() {
-    const note = this.state.note;
+  // Arsip atau batalkan arsip
+  async function onToggleArchive() {
     if (!note) return;
+
     if (note.archived) {
-      unarchiveNote(this.props.id);
+      await unarchiveNote(id);
     } else {
-      archiveNote(this.props.id);
-    }
-    this.setState({ note: getNote(this.props.id) });
-  }
-
-  render() {
-    const { note } = this.state;
-    if (!note) {
-      return <p>Catatan tidak ditemukan</p>;
+      await archiveNote(id);
     }
 
-    return (
-      <section className="detail-page">
-        <h1 className="detail-page__title">{note.title}</h1>
-        <p className="detail-page__createdAt">
-          {showFormattedDate(note.createdAt)}
-        </p>
-        <p className="detail-page__body">{note.body}</p>
-
-        <div className="detail-page__action">
-          <DeleteButton onClick={this.onDelete} />
-          <ArchiveButton
-            onClick={this.onToggleArchive}
-            isArchived={note.archived}
-          />
-        </div>
-      </section>
-    );
+    // Ambil ulang data terbaru
+    const { data } = await getNote(id);
+    setNote(data);
   }
+
+  // Jika data belum dimuat
+  if (!note) {
+    return <p>Memuat catatan...</p>;
+  }
+
+  return (
+    <section className="detail-page">
+      <h1 className="detail-page__title">{note.title}</h1>
+      <p className="detail-page__createdAt">
+        {showFormattedDate(note.createdAt)}
+      </p>
+      <p className="detail-page__body">{note.body}</p>
+
+      <div className="detail-page__action">
+        <DeleteButton onClick={onDelete} />
+        <ArchiveButton onClick={onToggleArchive} isArchived={note.archived} />
+      </div>
+    </section>
+  );
 }
 
-export default NoteDetailPageWrapper;
+export default NoteDetailPage;
