@@ -9,6 +9,7 @@ import {
   unarchiveNote,
 } from "../utils/network-data";
 import LocaleContext from "../contexts/LocaleContext";
+import useLoading from "../hooks/useLoading";
 
 function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,43 +18,48 @@ function HomePage() {
     return searchParams.get("keyword") || "";
   });
   const { locale } = React.useContext(LocaleContext);
+  const { loading, withLoading } = useLoading();
 
-  // Ambil data catatan aktif dari API
   React.useEffect(() => {
-    async function fetchNotes() {
+    withLoading(async () => {
       const { data } = await getActiveNotes();
       setNotes(data);
-    }
-    fetchNotes();
+    });
   }, []);
 
-  // Handler hapus catatan
-  async function onDeleteHandler(id) {
-    await deleteNote(id);
-    const { data } = await getActiveNotes();
-    setNotes(data);
-  }
+  const onDeleteHandler = (id) => {
+    withLoading(async () => {
+      await deleteNote(id);
 
-  // Handler arsip / batal arsip
-  async function onArchiveHandler(id) {
-    const note = notes.find((n) => n.id === id);
-    if (note && note.archived) {
-      await unarchiveNote(id);
-    } else {
-      await archiveNote(id);
-    }
+      alert(
+        locale === "id"
+          ? "Catatan berhasil dihapus!"
+          : "Note deleted successfully!"
+      );
 
-    const { data } = await getActiveNotes();
-    setNotes(data);
-  }
+      const { data } = await getActiveNotes();
+      setNotes(data);
+    });
+  };
 
-  // Handler pencarian
+  const onArchiveHandler = (id) => {
+    withLoading(async () => {
+      const note = notes.find((n) => n.id === id);
+      if (note && note.archived) {
+        await unarchiveNote(id);
+      } else {
+        await archiveNote(id);
+      }
+      const { data } = await getActiveNotes();
+      setNotes(data);
+    });
+  };
+
   function onKeywordChangeHandler(keyword) {
     setKeyword(keyword);
     setSearchParams({ keyword });
   }
 
-  // Filter catatan berdasarkan keyword
   const filteredNotes = notes.filter((note) =>
     note.title.toLowerCase().includes(keyword.toLowerCase())
   );
@@ -62,6 +68,15 @@ function HomePage() {
 
   return (
     <main>
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-content">
+            <div className="spinner"></div>
+            <span>{locale === "id" ? "Memuat..." : "Loading..."}</span>
+          </div>
+        </div>
+      )}
+
       <NoteSearch keyword={keyword} onSearch={onKeywordChangeHandler} />
       <h2>{locale === "id" ? "Catatan Aktif" : "Active Notes"}</h2>
       <NoteList

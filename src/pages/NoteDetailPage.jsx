@@ -10,60 +10,83 @@ import { showFormattedDate } from "../utils";
 import DeleteButton from "../components/DeleteButton";
 import ArchiveButton from "../components/ArchiveButton";
 import LocaleContext from "../contexts/LocaleContext";
+import useLoading from "../hooks/useLoading";
 
 function NoteDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [note, setNote] = React.useState(null);
   const { locale } = React.useContext(LocaleContext);
+  const { loading, withLoading } = useLoading();
 
-  // Ambil detail note berdasarkan id
   React.useEffect(() => {
-    async function fetchNote() {
+    withLoading(async () => {
       const { data } = await getNote(id);
       setNote(data);
-    }
-    fetchNote();
+    });
   }, [id]);
 
-  // Hapus catatan
   async function onDelete() {
-    await deleteNote(id);
-    navigate("/");
+    await withLoading(async () => {
+      await deleteNote(id);
+
+      alert(
+        locale === "id"
+          ? "Catatan berhasil dihapus!"
+          : "Note deleted successfully!"
+      );
+
+      navigate("/");
+    });
   }
 
-  // Arsip atau batalkan arsip
   async function onToggleArchive() {
     if (!note) return;
 
-    if (note.archived) {
-      await unarchiveNote(id);
-    } else {
-      await archiveNote(id);
-    }
+    await withLoading(async () => {
+      if (note.archived) {
+        await unarchiveNote(id);
+      } else {
+        await archiveNote(id);
+      }
 
-    // Ambil ulang data terbaru
-    const { data } = await getNote(id);
-    setNote(data);
-  }
-
-  // Jika data belum dimuat
-  if (!note) {
-    return <p>{locale === "id" ? "Memuat catatan..." : "Loading note..."}</p>;
+      const { data } = await getNote(id);
+      setNote(data);
+    });
   }
 
   return (
     <section className="detail-page">
-      <h1 className="detail-page__title">{note.title}</h1>
-      <p className="detail-page__createdAt">
-        {showFormattedDate(note.createdAt)}
-      </p>
-      <p className="detail-page__body">{note.body}</p>
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-content">
+            <div className="spinner"></div>
+            <span>{locale === "id" ? "Memuat..." : "Loading..."}</span>
+          </div>
+        </div>
+      )}
 
-      <div className="detail-page__action">
-        <DeleteButton onClick={onDelete} />
-        <ArchiveButton onClick={onToggleArchive} isArchived={note.archived} />
-      </div>
+      {!note && !loading && (
+        <p>{locale === "id" ? "Memuat catatan..." : "Loading note..."}</p>
+      )}
+
+      {note && (
+        <>
+          <h1 className="detail-page__title">{note.title}</h1>
+          <p className="detail-page__createdAt">
+            {showFormattedDate(note.createdAt)}
+          </p>
+          <p className="detail-page__body">{note.body}</p>
+
+          <div className="detail-page__action">
+            <DeleteButton onClick={onDelete} />
+            <ArchiveButton
+              onClick={onToggleArchive}
+              isArchived={note.archived}
+            />
+          </div>
+        </>
+      )}
     </section>
   );
 }

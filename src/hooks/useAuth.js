@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getUserLogged, putAccessToken } from "../utils/network-data";
 
-export default function useAuth() {
+function useAuth() {
   const [authedUser, setAuthedUser] = useState(null);
   const [initializing, setInitializing] = useState(true);
 
@@ -31,3 +31,5 @@ export default function useAuth() {
 
   return { authedUser, initializing, login, logout };
 }
+
+export default useAuth;

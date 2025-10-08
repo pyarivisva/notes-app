@@ -459,6 +459,63 @@ main {
   color: var(--on-background);
 }
 
+/* Overlay menutupi seluruh layar */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  /* semi-transparan */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  /* pastikan di atas semua konten */
+}
+
+/* Kontainer spinner + teks */
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background-color: var(--surface);
+  padding: 24px 32px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Spinner besar */
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(0, 0, 0, 0.1);
+  border-top: 6px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Animasi muter */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Teks loading */
+.loading-content span {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--on-background);
+}
+
+
 @media screen and (min-width: 650px) {
   .notes-list {
     grid-template-columns: repeat(2, 1fr);
