@@ -2,7 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { MdTranslate } from "react-icons/md";
 import { FaMoon, FaSun } from "react-icons/fa";
-import { FiHome, FiPlusCircle, FiArchive, FiLogOut } from "react-icons/fi";
+import {
+  FiHome,
+  FiPlusCircle,
+  FiArchive,
+  FiLogOut,
+  FiUser,
+} from "react-icons/fi";
 
 function Header({
   authedUser,
@@ -78,13 +84,25 @@ function Header({
               </li>
 
               <li>
-                <button
-                  className="btn-logout"
-                  onClick={onLogout}
-                  title={locale === "id" ? "Keluar" : "Logout"}
-                >
-                  <FiLogOut />
-                </button>
+                {authedUser && (
+                  <div className="user-info">
+                    <div className="avatar-icon">
+                      <FiUser />
+                    </div>
+                    <span className="user-name">
+                      {locale === "id"
+                        ? `Hai, ${authedUser.name}`
+                        : `Hello, ${authedUser.name}`}
+                    </span>
+                    <button
+                      className="btn-logout"
+                      onClick={onLogout}
+                      title="Keluar"
+                    >
+                      <FiLogOut />
+                    </button>
+                  </div>
+                )}
               </li>
             </>
           )}

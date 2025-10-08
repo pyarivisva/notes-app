@@ -37,20 +37,6 @@ body {
   background-color: var(--background);
 }
 
-/* body,
-button,
-input,
-textarea {
-  color: var(--on-background);
-
-  .app-container {
-    color: var(--on-background);
-    background-color: var(--background);
-    min-height: 100vh;
-    transition: all ease-in-out 0.5s;
-  }
-} */
-
 header {
   display: flex;
   align-items: center;
@@ -497,7 +483,6 @@ main {
   animation: spin 1s linear infinite;
 }
 
-/* Animasi muter */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -508,13 +493,85 @@ main {
   }
 }
 
-/* Teks loading */
 .loading-content span {
   font-size: 20px;
   font-weight: bold;
   color: var(--on-background);
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--on-background);
+  font-size: 18px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.user-info:hover {
+  background-color: rgba(138, 79, 255, 0.2);
+  color: var(--primary);
+}
+
+.user-info .avatar-icon {
+  width: 40px;
+  height: 40px;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  background-color: var(--surface);
+  color: var(--primary);
+}
+
+.user-info .user-name {
+  font-weight: 600;
+  color: var(--on-background);
+}
+
+.user-info .btn-logout {
+  background: transparent;
+  border: none;
+  margin-left: 8px;
+  cursor: pointer;
+  color: var(--on-background);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.user-info .btn-logout:hover {
+  color: #ff4f4f;
+}
+
+@media screen and (max-width: 600px) {
+  .user-info {
+    font-size: 16px;
+    gap: 8px;
+    padding: 2px 8px;
+  }
+
+  .user-info .avatar-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+
+  .user-info .user-name {
+    font-size: 16px;
+  }
+
+  .user-info .btn-logout {
+    font-size: 18px;
+  }
+}
 
 @media screen and (min-width: 650px) {
   .notes-list {
