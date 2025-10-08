@@ -8,7 +8,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { FiHome, FiPlusCircle, FiArchive, FiLogOut } from "react-icons/fi";
-import { getUserLogged, putAccessToken } from "./utils/network-data";
+import useAuth from "./hooks/useAuth";
 
 function Layout({ authedUser, onLogout }) {
   return (
@@ -49,40 +49,16 @@ function Layout({ authedUser, onLogout }) {
 }
 
 function App() {
-  const [authedUser, setAuthedUser] = useState(null);
-  const [initializing, setInitializing] = useState(true);
-
-  useEffect(() => {
-    async function fetchUser() {
-      const { data } = await getUserLogged();
-      setAuthedUser(data);
-      setInitializing(false);
-    }
-
-    fetchUser();
-  }, []);
-
-  const onLoginSuccess = (user) => {
-    setAuthedUser(user);
-  };
-
-  const onLogout = () => {
-    setAuthedUser(null);
-    putAccessToken("");
-  };
+  const { authedUser, initializing, login, logout } = useAuth();
 
   if (initializing) {
     return <div>Loading...</div>;
   }
-
-  // Jika belum login, hanya tampilkan route login & register
-  if (authedUser === null) {
+  // Jika belum login
+  if (!authedUser) {
     return (
       <Routes>
-        <Route
-          path="/login"
-          element={<LoginPage onLoginSuccess={onLoginSuccess} />}
-        />
+        <Route path="/login" element={<LoginPage onLoginSuccess={login} />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
@@ -92,7 +68,7 @@ function App() {
   // Jika sudah login, tampilkan aplikasi utama
   return (
     <Routes>
-      <Route element={<Layout authedUser={authedUser} onLogout={onLogout} />}>
+      <Route element={<Layout authedUser={authedUser} onLogout={logout} />}>
         <Route index element={<HomePage />} />
         <Route path="/notes/new" element={<AddPage />} />
         <Route path="/notes/:id" element={<NoteDetailPage />} />
