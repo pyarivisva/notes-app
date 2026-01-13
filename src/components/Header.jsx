@@ -21,7 +21,7 @@ function Header({
   return (
     <header className="app-header">
       <h1 className="app-title">
-        {locale === "id" ? "Aplikasi Catatan" : "Note App"}
+        {locale === "id" ? "Aplikasi Catatan" : "Notes App"}
       </h1>
 
       <nav className="navigation">
